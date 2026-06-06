@@ -1,0 +1,4 @@
+# Shared backbone with symbol / n-gram / word / phrase heads. The auxiliary heads
+# drive inference-time pattern-whitelisting + geometric-mean reranking.
+kind: hydra
+learning_rate: 0.001

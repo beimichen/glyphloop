@@ -1,0 +1,4 @@
+# Uncertainty-mining + clustering settings for `glyphloop active mine`.
+method: entropy        # entropy | margin
+min_cluster_size: 10   # smallest cluster worth a discovery question
+optics_min_samples: 5

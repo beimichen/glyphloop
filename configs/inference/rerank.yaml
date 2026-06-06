@@ -1,0 +1,5 @@
+# Inference / reranking settings (consumed by glyphloop.inference.pipeline).
+top_k: 5
+# Geometric-mean evidence fusion across the hydra heads is always on for the
+# multi-head model; single-output students use the raw phrase softmax.
+use_head_reranking: true

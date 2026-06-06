@@ -1,0 +1,68 @@
+# ─── Model weights & outputs (NEVER committed) ───
+# Trained teacher/student checkpoints and exported graphs are not distributed.
+*.h5
+*.hdf5
+*.keras
+*.onnx
+*.pb
+*.tflite
+*.ckpt
+*.pt
+*.pth
+saved_model/
+models/*
+!models/.gitkeep
+!models/README.md
+
+# ─── Data (NEVER committed: synthetic renders, scraped images, features, splits) ───
+# This repo ships code + the phrase word-list only — no image corpora.
+# Anchored to the repo root so the package dir src/glyphloop/data/ is NOT ignored.
+/data/
+/synthetic_images/
+*.npy
+*.npz
+*.jpg
+*.jpeg
+*.webp
+# Ignore loose PNGs (e.g. generated CAPTCHA renders) anywhere...
+*.png
+# ...but DO keep committed derived analysis plots and committed assets:
+!reports/figures/*.png
+!assets/**
+
+# ─── Experiment / run outputs ───
+runs/
+mlruns/
+wandb/
+outputs/        # Hydra default run dir
+multirun/
+lightning_logs/
+
+# ─── Secrets ───
+.env
+*.key
+
+# ─── Python ───
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# ─── Tooling caches ───
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.dvc/cache/
+.dvc/tmp/
+
+# ─── OS / editor ───
+.DS_Store
+.idea/
+.vscode/
+*.swp

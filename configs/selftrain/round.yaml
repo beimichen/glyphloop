@@ -1,0 +1,7 @@
+# Self-training round settings (consumed by `glyphloop selftrain`).
+# confidence is the precision gate — high on purpose; we discard most of the pool
+# to keep the kept slice almost-never-wrong.
+rounds: 2
+confidence: 0.99
+epochs: 3
+batch_size: 64

@@ -1,0 +1,3 @@
+# Accurate-but-heavy ResNet phrase classifier (the self-training teacher).
+kind: teacher
+learning_rate: 0.001

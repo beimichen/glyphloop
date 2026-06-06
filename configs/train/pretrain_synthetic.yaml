@@ -1,0 +1,6 @@
+# Round 0 — bootstrap the teacher on synthetic data (learn to read glyphs on the
+# "wrong" distribution; good enough to be a pseudo-labeler, not yet a solver).
+name: pretrain_synthetic
+epochs: 20
+batch_size: 32
+validation_split: 0.1

@@ -1,0 +1,4 @@
+# The pseudo-labeled real distribution (staged by `glyphloop selftrain`).
+# The original 1.3M-image pool is gone and was never redistributable.
+kind: real
+path: runs/selftrain/staged_train

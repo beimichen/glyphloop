@@ -1,0 +1,17 @@
+# Root Hydra config. Compose recipes on the command line, e.g.
+#   python -m glyphloop.modeling.train train=finetune_real data=real model=teacher
+# Inspect a composition without training:
+#   python -m glyphloop.modeling.train train=pretrain_synthetic data=synthetic --cfg job
+defaults:
+  - model: teacher
+  - data: synthetic
+  - train: pretrain_synthetic
+  - _self_
+
+seed: 42
+
+hydra:
+  run:
+    dir: runs/${train.name}
+  job:
+    chdir: false

@@ -1,0 +1,135 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "glyphloop"
+version = "0.1.0"
+description = "Learning to read distorted text from almost no labels: synthetic bootstrap -> confidence-gated self-training -> distillation, with a cold-start active-learning loop."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11,<3.13"
+authors = [{ name = "Bei Mi Chen" }]
+keywords = [
+    "machine-learning",
+    "semi-supervised-learning",
+    "self-training",
+    "pseudo-labeling",
+    "knowledge-distillation",
+    "synthetic-data",
+    "active-learning",
+    "ocr",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+]
+
+# Default install is the *lightweight* path — synthetic data generation, the
+# vocabulary/glossary, post-processing, ONNX inference and clustering all run
+# with no TensorFlow/CUDA stack. `uv sync` + `just sample` works on a fresh clone.
+dependencies = [
+    "numpy>=1.26",
+    "pillow>=10.2",
+    "onnxruntime>=1.17",
+    "pyyaml>=6.0",
+    "hydra-core>=1.3",
+    "omegaconf>=2.3",
+    "pydantic-settings>=2.2",
+    "python-dotenv>=1.0",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+# Heavy training stack — only needed to (re)train teacher/student or export ONNX.
+train = [
+    "tensorflow>=2.15",
+    "tf2onnx>=1.16",
+]
+# Embedding + clustering + plotting (the cold-start / figures path).
+viz = [
+    "scikit-learn>=1.4",
+    "matplotlib>=3.8",
+]
+# Human-in-the-loop labeling UI and the demo.
+app = [
+    "streamlit>=1.36",
+    "gradio>=4.44",
+]
+all = ["glyphloop[train,viz,app]"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+    "pyright>=1.1.380",
+    "pytest>=8.2",
+    "pytest-cov>=5.0",
+    "pre-commit>=3.7",
+    "scikit-learn>=1.4",  # used by a couple of pure-logic tests
+]
+
+[project.urls]
+Repository = "https://github.com/beimichen/glyphloop"
+"Method writeup" = "https://github.com/beimichen/glyphloop/blob/main/docs/METHOD.md"
+
+[project.scripts]
+glyphloop = "glyphloop.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/glyphloop"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"assets/fonts" = "glyphloop/_assets/fonts"
+
+# ─────────────────────────── Ruff (lint + format) ───────────────────────────
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+# Modern, readable rule set: pycodestyle, pyflakes, isort, pyupgrade, bugbear,
+# comprehensions, simplify, naming. Not maximalist.
+select = ["E", "F", "I", "UP", "B", "C4", "SIM", "N", "W"]
+ignore = [
+    "E501",  # line length handled by the formatter
+    "N806",  # ML code uses X, Y, Z for tensor dims by convention
+    "N803",  # ditto for function args
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+"apps/*" = ["E402"]  # Streamlit apps set page config before some imports
+
+[tool.ruff.lint.isort]
+known-first-party = ["glyphloop"]
+
+# ─────────────────────────────── Pytest ─────────────────────────────────────
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+markers = [
+    "needs_weights: requires trained weights that are not committed",
+    "needs_tf: requires the optional [train] stack (tensorflow)",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["glyphloop"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+# ─────────────────────────────── Pyright ────────────────────────────────────
+[tool.pyright]
+include = ["src"]
+pythonVersion = "3.11"
+typeCheckingMode = "basic"
+# Optional extras (tensorflow, sklearn, matplotlib, streamlit, gradio) are not in
+# the default env, so don't flag their imports or stub-only resolution.
+reportMissingImports = false
+reportMissingModuleSource = false

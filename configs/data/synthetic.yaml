@@ -1,0 +1,3 @@
+# Round-0 bootstrap corpus: balanced renders from the phrase vocabulary.
+kind: synthetic
+path: data/processed/synthetic

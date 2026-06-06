@@ -1,0 +1,3 @@
+# A tiny locally-generated set (just sample) for smoke-running the pipeline.
+kind: sample
+path: data/processed/synthetic

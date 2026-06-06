@@ -1,0 +1,61 @@
+# Pipeline-as-code: the full self-training DAG, reproducible with `dvc repro`.
+#
+# NOTE: running this end-to-end requires an unlabeled image pool (the original
+# 1.3M-image corpus is gone and was never redistributable) and a configured DVC
+# remote. It is committed as an explicit, versioned description of how the model
+# was produced — synthetic bootstrap -> confidence-gated self-training ->
+# distillation. No data or weights are tracked in git (see .gitignore).
+
+stages:
+  # Round 0 — render a balanced synthetic dataset from the phrase vocabulary.
+  synthesize:
+    cmd: >-
+      glyphloop synth --split train --per-phrase 100 --out data/processed/synthetic
+    deps:
+      - src/glyphloop/data/synthesis
+      - src/glyphloop/data/vocab/authentic_phrases.txt
+    outs:
+      - data/processed/synthetic
+
+  # Round 0 — bootstrap the teacher on synthetic data (learns to read glyphs).
+  pretrain_teacher:
+    cmd: >-
+      python -m glyphloop.modeling.train train=pretrain_synthetic data=synthetic
+    deps:
+      - data/processed/synthetic
+      - configs/train/pretrain_synthetic.yaml
+    outs:
+      - runs/pretrain_synthetic/teacher.weights.h5
+
+  # Rounds 1..N — confidence-gated pseudo-labeling of the unlabeled real pool,
+  # then second-stage training. The precision gate is the whole game.
+  selftrain:
+    cmd: >-
+      glyphloop selftrain --pool data/raw/unlabeled
+      --teacher runs/pretrain_synthetic/teacher.weights.h5
+      --rounds 2 --confidence 0.99 --out runs/selftrain
+    deps:
+      - data/raw/unlabeled
+      - runs/pretrain_synthetic/teacher.weights.h5
+      - configs/selftrain/round.yaml
+    outs:
+      - runs/selftrain/teacher.weights.h5
+
+  # Squeeze the accurate-but-heavy teacher into an email-sized deployable student.
+  distill:
+    cmd: >-
+      glyphloop distill --teacher runs/selftrain/teacher.weights.h5
+      --out runs/distill/student.weights.h5
+    deps:
+      - runs/selftrain/teacher.weights.h5
+      - configs/train/distill.yaml
+    outs:
+      - runs/distill/student.weights.h5
+
+  # Export the student to ONNX for portable, TF-free inference.
+  export_onnx:
+    cmd: glyphloop export --weights runs/distill/student.weights.h5 --out models/student.onnx
+    deps:
+      - runs/distill/student.weights.h5
+    outs:
+      - models/student.onnx

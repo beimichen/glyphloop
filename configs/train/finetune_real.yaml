@@ -1,0 +1,6 @@
+# Round N — second-stage training on the pseudo-labeled real distribution,
+# closing the synthetic->real domain gap. Lower LR, fewer epochs than round 0.
+name: finetune_real
+epochs: 8
+batch_size: 64
+validation_split: 0.1

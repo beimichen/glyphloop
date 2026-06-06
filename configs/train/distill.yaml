@@ -1,0 +1,5 @@
+# Distillation hyperparameters (consumed by `glyphloop distill`).
+name: distill
+epochs: 5
+batch_size: 64
+temperature: 4.0
