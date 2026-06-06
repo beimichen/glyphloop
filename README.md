@@ -30,10 +30,10 @@ clean semi-supervised recipe that turns "no labels" into a deployable reader:
 
 1. **Synthetic bootstrap.** Hand-build a synthetic image generator and pretrain a
    model on it — enough to read glyphs, not yet to solve the real distribution.
-2. **Confidence-gated self-training.** Pseudo-label a large pool of *unlabeled*
-   real images, keep only the high-confidence predictions (a precision gate), and
-   train a second stage on that real distribution — closing the synthetic→real
-   domain gap.
+2. **Confidence-gated self-training.** We scraped and organized **~1.3M unlabeled
+   real images**, pseudo-labeled them, kept only the high-confidence predictions
+   (a precision gate), and trained a second stage on that real distribution —
+   closing the synthetic→real domain gap.
 3. **Distillation.** Squeeze the accurate-but-heavy model into an email-sized
    student for deployment.
 
@@ -56,6 +56,7 @@ these are not re-trainable here — see [Provenance & honesty](#provenance--hone
 
 | Metric | Value |
 |---|---|
+| Unlabeled real images scraped, organized & pseudo-labeled | **~1.3M** |
 | Accuracy on ~1,000 held-out real images | **~99.1%** |
 | Self-training rounds to convergence | 3 (synthetic + 2 pseudo-label rounds) |
 | Deployed (distilled) student size | **~9 MB** ("email-attachment-sized") |
@@ -188,9 +189,11 @@ the resolved Hydra config is saved beside every run.
 - **No model weights or image data are committed** — only code, the public phrase
   word-list, and a derived analysis figure (see `.gitignore`). Train your own with
   the pipeline above.
-- **Scope.** No browser automation, no scraping, no network calls, no interaction
-  with any live service. The engineering on show is the synthetic data pipeline
-  and the semi-supervised method.
+- **Scope.** The original project scraped and organized ~1.3M images at scale (the
+  data-engineering half of the work). This **repository ships none of that
+  automation** — no browser/scraping/network code, and no interaction with any
+  live service. What's on show here is the synthetic data pipeline and the
+  semi-supervised method.
 
 ## Limitations & next steps
 
