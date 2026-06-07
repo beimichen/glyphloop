@@ -9,7 +9,11 @@ description = "Learning to read distorted text from almost no labels: synthetic 
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11,<3.13"
-authors = [{ name = "Bei Mi Chen" }]
+authors = [
+    { name = "Danny Blaker" },
+    { name = "Bei Mi Chen" },
+    { name = "Lane McDonald" },
+]
 keywords = [
     "machine-learning",
     "semi-supervised-learning",

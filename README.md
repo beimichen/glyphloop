@@ -204,7 +204,11 @@ the resolved Hydra config is saved beside every run.
   fresh student and host its ONNX on the Hugging Face Hub to make the Gradio demo a
   clickable public Space.
 
+## Authors
+
+A friends' experiment by **Danny Blaker**, **Bei Mi Chen**
+([github.com/beimichen](https://github.com/beimichen)), and **Lane McDonald**.
+
 ## License
 
-MIT. See [LICENSE](LICENSE). Author: **Bei Mi Chen** ·
-[github.com/beimichen](https://github.com/beimichen)
+MIT. See [LICENSE](LICENSE).
